@@ -1,1 +1,1 @@
-djweb: gunicorn ibigkas_project.wsgi --log-file -
+web: gunicorn ibigkas_project.wsgi --log-file -
