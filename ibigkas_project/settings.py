@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://ibigkas-math-production.up.railway.app/', '127.0.0.1']
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io']
 # CSRF_TRUSTED_ORIGINS = ['https://5133-136-158-37-137.ap.ngrok.io','https://*.127.0.0.1']
 
