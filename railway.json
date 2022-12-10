@@ -4,10 +4,20 @@
       "builder": "nixpacks",
       "buildCommand": "echo building!"
     },
+    
     "deploy": {
       "startCommand": "echo starting!",
       "healthcheckPath": "/",
       "healthcheckTimeout": 100,
       "restartPolicyType": "never"
-    }
-  }
+    },
+
+    "environments": {
+        "production": {
+          "deploy": {
+            "startCommand": "echo starting production!"
+          }
+        }
+      }
+}
+
