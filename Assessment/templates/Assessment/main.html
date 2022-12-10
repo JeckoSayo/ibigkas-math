@@ -1,0 +1,48 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %}
+
+{% block title %}Ibigkas Math{% endblock %}
+{% load static %}
+{% block content %}
+
+<!-- sample -->
+<div class="main-container-land">
+    <img src="{% static 'Assessment/img/logo.png' %}" alt="ibigkas logo">
+    <div class="btn-center">
+        <button type="button" onclick="singlePlayer()" class="btn btn-primary">single player</button>
+        <button type="button" onclick="multiplayer()" class="btn btn-primary">multiplayer</button>
+        <button type="button" class="btn btn-primary">settings</button>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    var group = "{{ group }}";
+    var user_uuid= "{{ request.session.uuid }}";
+
+    function playMusic(){
+        let audio = new Audio("{% static 'Assessment/music/IBM_ui_Confirm.wav' %}");
+        audio.play()
+	}
+
+    function singlePlayer(){
+        playMusic()
+        setTimeout(function(){ 
+            window.location.replace('/singleplayer/menu-single-player/'+ user_uuid);
+        }, 400);
+    }
+
+    function multiplayer(){
+        if (group == "None"){
+            playMusic()
+            setTimeout(function(){ 
+                window.location.replace('/demographics/' + user_uuid + "/");
+            }, 400);
+        }else{
+             setTimeout(function(){ 
+                window.location.replace('/multiplayer/room/'+ group + '/' + user_uuid + '/');
+             }, 400);
+        }
+    }    
+</script>
+{% endblock %}

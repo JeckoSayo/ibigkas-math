@@ -1,0 +1,113 @@
+@font-face { font-family: Promo-bold; font-weight: bold; src: url("../../singlePlayer/styles/Promo-Bold.78c5b61c39e5.otf"); } 
+@font-face { font-family: Promo-normal; src: url("../../singlePlayer/styles/Promo-Normal.3cf5a523580f.otf");}
+@font-face { font-family: Promo-semi; src: url("../../singlePlayer/styles/Promo-SemiBold.9811cf9bcdcf.otf");}
+
+
+:root {
+	--body-bg: #fff8e8;
+	--border-color:#e49076;
+
+	--hover-color:#f5f1e5;
+	--hover-second-color:#f58a76;
+	--hover-text-color:#fef8ea;
+
+	--second-color:#08668a;
+
+	--text-title-color:#ccc2d9;
+	--text-color:#e49076;
+
+	--text-size:17px;
+	--font-fam-bold:Promo-bold;
+	--font-semi-bold:Promo-semi;
+	--font-fam-normal:Promo-normal;
+}
+.host-game-container{
+  margin-top: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.host-game-container button{
+  width: 10rem !important;
+  height: 3rem;
+  margin: 11px;
+  font-size: 20px;
+}
+.host-game-container h1{
+  color: var(--text-title-color);
+  font-family: var(--font-fam-bold);
+  margin-bottom: 2rem;
+}
+
+.host-game-back{
+  position: absolute;
+  bottom: 48px;
+  left: 44px;
+}
+
+#slider-value{
+  display: inline-block;
+  text-align: right;
+  width: 1px;
+}
+
+.host-game-container #slider-value{
+  font-size: 25px !important;
+  margin-bottom: 1rem;
+}
+
+.host-game-container .lobby{
+  margin-top: 1.9rem;
+}
+
+
+/* =============== Slider CSS =============== */
+
+
+
+.slider {
+  -webkit-appearance: none;
+  width: 70%;
+  height: 25px;
+  border: 2px solid var(--second-color);
+  border-radius: 15px;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  background: var(--body-bg);
+}
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-runnable-track{
+  -webkit-appearance: none;
+}
+.slider::-moz-track{
+  -moz-appearance: none;
+}
+.slider::-ms-track{
+  appearance: none;
+}
+
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  background: var(--hover-second-color);
+  cursor: pointer;
+}
+.slider::-webkit-slider-thumb:hover{
+  background:var(--border-color);
+}
+.slider::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  background: var(--hover-second-color);
+  cursor: pointer;
+}

@@ -1,0 +1,50 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %} {% load static %} 
+{% block title %}Ibigkas Login{% endblock %} {% block content %}
+<div class="logIn_page">
+  <img src="{% static 'Assessment/img/logo.png' %}" alt="ibigkas logo" />
+  <div class="category">
+
+    {% for i in check %}
+        {% if i.research_mode %}
+            <p>Mode: Research</p>
+        {% endif %}
+    {% endfor %} 
+
+    <button type="button" id="sign" class="btn btn-primary">
+      sign in
+    </button>
+    
+    <button type="button" id="create" class="btn btn-primary">
+      create account
+    </button>
+    
+    <bgsound src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg">
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script type="text/javascript">
+
+  function playMusic(){
+    let audio = new Audio("{% static 'Assessment/music/IBM_ui_Confirm.wav' %}");
+    audio.play()
+	}
+
+  document.getElementById("sign").addEventListener("click", signIn);
+  document.getElementById("create").addEventListener("click", create);
+
+  function signIn() {
+    playMusic()
+    setTimeout(function(){ 
+      location.href = '{% url "Assessment:SignIn_multi" %}';
+     }, 400);
+  }
+
+  function create() {
+    playMusic()
+    setTimeout(function(){ 
+      location.href = '{% url "Assessment:createAccount" %}';
+     }, 400);
+  }
+
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+@font-face { font-family: Promo-bold; font-weight: bold; src: url('../../singlePlayer/styles/Promo-Bold.otf'); } 
+@font-face { font-family: Promo-normal; src: url('../../singlePlayer/styles/Promo-Normal.otf');}
+@font-face { font-family: Promo-semi; src: url('../../singlePlayer/styles/Promo-SemiBold.otf');}
+
+:root {
+	--body-bg: #fff8e8;
+	--border-color:#e49076;
+
+	--hover-color:#f5f1e5;
+	--hover-second-color:#f58a76;
+	--hover-text-color:#fef8ea;
+
+	--second-color:#086788;
+
+	--text-title-color:#ccc2d9;
+	--text-color:#e49076;
+
+	--text-size:17px;
+	--font-fam-bold:Promo-bold;
+	--font-semi-bold:Promo-semi;
+	--font-fam-normal:Promo-normal;
+  }
+
+  
+.main-container-land{
+	width: 100%;
+    height: 100%;
+}
+  .main-container-land img{
+    top:19%;
+    left: 50%;
+    transform: translate3d(-50%,-50%, 0);
+    position: absolute;
+    width: 15rem;
+  }
+  .main-container-land .btn-center{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 26px;
+	margin-top: 4rem;
+  }
+  .btn-center button{
+	width: 9rem !important;
+	height: 3rem;
+  }
+  @media screen and (max-width:350px){
+    .main-container-land img{
+      width: 12rem;
+    }
+  }
+ 

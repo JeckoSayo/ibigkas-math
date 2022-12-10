@@ -1,0 +1,154 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %} {% load static %} 
+{% block title%}Pre Test{% endblock %} {% block content %}
+<form action="" autocomplete="off" id="pretest-form" class="pre-test-form">
+  {% csrf_token %}
+  <div class="pretest-container">
+    <p class="title-pretest">Pre Test</p>
+
+    <div class="pre-scroll">
+      {% for i in pretest %}
+
+      <div class="question-con">
+        <p class="num-pre">{{ forloop.counter }}.&ensp;</p>
+        <p class="quest-first">{{i.q11|default_if_none:""}}&emsp; <span class="q1">{{i.q1}}</span> </p>
+        <div class="second-quest">
+          <p>{{i.q22|default_if_none:""}}&emsp; <span class="q2">{{i.q2}}</span> </p>
+          <p class="operator">{{i.operator}}</p>
+        </div>
+      </div>
+      
+
+      <div class="line"></div>
+      <input
+        type="text"
+        id="input"
+        name="answer"
+        oninput="this.value = this.value.replace(/[^0-9\./]/g, '')"
+        class="answer"
+        placeholder="Enter your answer.."
+        onCopy="return false"
+        onDrag="return false"
+        onDrop="return false"
+        onPaste="return false"
+        required="true"
+      />
+      <br />
+      <hr />
+
+      {% endfor %}
+    </div>
+
+    <div class="send-submit">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+</form>
+
+{% endblock %} {% block scripts %}
+<script type="text/javascript">
+
+  var user_uuid= "{{ request.session.uuid }}"
+  
+  $("#pretest-form").on("submit", function(e){
+      e.preventDefault();
+
+      function answer(ans){
+        let answer_array = []
+
+        for(i=0;i<ans.length;i++){
+          let quest_idOne = ans[i].value;
+          answer_array.push(quest_idOne);
+        }
+        return answer_array;
+      }
+
+
+
+        let questOperator = document.getElementsByClassName("operator");
+        let questQ1 = document.getElementsByClassName("q1");
+        let questQ2 = document.getElementsByClassName("q2");
+
+        // Get all user answer from inputs 
+        let questionsAOne = document.getElementsByClassName("answer");
+        var studentAnswer = answer(questionsAOne);
+
+        
+
+
+      let pre_test_answer = [];
+      let q11 = [];
+      let q22 = [];
+
+
+      {% for i in pretest %}
+        q11.push({{i.q11|default_if_none:"0"}});
+        q22.push({{i.q22|default_if_none:"0"}});
+
+        pre_test_answer.push({{i.answer}});
+      {% endfor %}
+
+
+    // Check if user_answer is equal to correct answer in database
+      let points = 0;
+      for(j=0; j<pre_test_answer.length; j++){
+        if(pre_test_answer[j] == eval(studentAnswer[j])){
+          ++points;
+        }
+      }
+
+
+    //  This for loop is for pre_test_answer in Players model
+      let ansStatus;
+      var questArr = []
+        for(j=0; j < questOperator.length; j++){
+
+          if(pre_test_answer[j] == eval(studentAnswer[j])){
+            ansStatus = "Correct!";
+          }else{
+            ansStatus = "Wrong!";
+          }
+
+          if(q11[j] != 0){
+            var q1_val = q11[j];
+          }else{
+            var q1_val = "";
+          }
+          
+          if(q22[j] != 0){
+            var q2_val = q22[j];
+          }
+          else{
+            var q2_val = "";
+          }
+
+          var layout = `[ ${q1_val}  ${questQ1[j].innerHTML} ${questOperator[j].innerHTML} ${q2_val}  ${questQ2[j].innerHTML} ${ansStatus} = ${questionsAOne[j].value}]`;
+          questArr.push(layout);
+        }
+
+      const finalResult = `${points} out of ${studentAnswer.length}`
+
+      var url = '{% url "Assessment:pre_test_ans" %}'
+
+      $.ajax({
+        type:'POST',
+        url:url,
+        data:{
+          pretestAnswers:JSON.stringify(questArr),
+          pretestScore:finalResult,
+          studentUUID: user_uuid,
+          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success : function(data){
+          redirect_url = '/ibigkas-menu/' + user_uuid + '/';
+          window.location.replace(redirect_url);
+        },
+        error : function(){
+          alert("Ajax Error");
+        }
+
+      });
+
+  });
+</script>
+
+{% endblock %}

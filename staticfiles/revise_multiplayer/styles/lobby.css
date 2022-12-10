@@ -1,0 +1,68 @@
+@font-face { font-family: Promo-bold; font-weight: bold; src: url('../../singlePlayer/styles/Promo-Bold.otf'); } 
+@font-face { font-family: Promo-normal; src: url('../../singlePlayer/styles/Promo-Normal.otf');}
+@font-face { font-family: Promo-semi; src: url('../../singlePlayer/styles/Promo-SemiBold.otf');}
+
+:root {
+	--body-bg: #fff8e8;
+	--border-color:#e49076;
+
+	--hover-color:#f5f1e5;
+	--hover-second-color:#f58a76;
+	--hover-text-color:#fef8ea;
+
+	--second-color:#08668a;
+
+	--text-title-color:#ccc2d9;
+	--text-color:#e49076;
+
+	--text-size:17px;
+	--font-fam-bold:Promo-bold;
+	--font-semi-bold:Promo-semi;
+	--font-fam-normal:Promo-normal;
+}
+.lobby-container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.lobby-container .title{
+    color: var(--text-title-color);
+    font-family: var(--font-fam-bold);
+    text-align: center;
+    margin-top: 2rem;
+}
+.lobby-body{
+    width: 90%;
+    border: 3px solid var(--border-color);
+    height: 75%;
+    margin-top: 2rem;
+    border-radius: 16px;
+    padding: 1.5rem 0px 2rem 0px;
+}
+.user-con{
+    padding: 0px 7px 0px 15px;
+    display: flex;
+    justify-content: space-between;
+}
+.user-con p{
+    margin: 0;
+}
+.user-con button{
+    border-radius: 10px;
+}
+#message_error {
+    font-family: var(--font-fam-bold);
+    text-align: center;
+}
+@media screen and (max-width:360px){
+    #message_error {
+        font-size: 20px;
+    }
+}
+@media screen and (max-width:276px){
+    #message_error {
+        font-size: 14px;
+    }
+}

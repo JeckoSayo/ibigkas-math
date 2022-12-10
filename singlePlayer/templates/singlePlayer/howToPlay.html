@@ -1,0 +1,54 @@
+{% extends 'singlePlayer/base.html' %} 
+{% block title %} 
+how to play
+{% endblock %} 
+{% load static %}
+
+{% block content %}
+<div class="how-to-play-container">
+    <div class="headings">
+        <h4>Parts of the game:</h4>
+    </div>
+    <div class="mini-game-container">
+        <div class="mini-game-layout">
+            <div class="top-border"></div>
+
+            <div class="score">
+                <p>Score: 0</p>
+            </div>
+
+            <div class="game-problem">
+                <p class="num4">4</p>
+                <div class="problem">
+                    <p class="operator">+</p>
+                    <p>2</p>
+                </div>
+            </div>
+
+            <div class="bottom-border"></div>
+
+            <div class="game-choices">
+                <p>0</p>
+                <p>6</p>
+                <p>10</p>
+            </div>
+        </div>
+        <div class="cir1">
+            <p>Target</p>
+         <img src="{% static 'Assessment/img/tutor/Circle.png' %}" alt="">
+        </div>
+        <div class="cir2">
+            <p>Buttons</p>
+            <img src="{% static 'Assessment/img/tutor/Circle.png' %}" alt="">
+        </div>
+        <div class="hand">
+            <img src="{% static 'Assessment/img/tutor/Hand.png' %}" alt="">
+        </div>
+    </div>
+    <div class="button-container">
+        <button type="button" name="back" class="btn btn-primary">back</button>
+        <button type="submit" name="exit" class="btn btn-primary exit">x</button>  
+        <button type="submit" name="start" class="btn btn-primary">next</button>  
+    </div>
+</div>
+{% endblock %}

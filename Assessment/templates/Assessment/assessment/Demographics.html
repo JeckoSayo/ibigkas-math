@@ -1,0 +1,253 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %}
+
+{% block title %}Demographics{% endblock %}
+
+{% block content %}
+
+<div class="demographics-container">
+    <div class="top-demo-titile" id="DemoTitle">
+        <p class="main-title-q">Demographics Questionnaire</p>
+        <p class="title" id="demo-title">I.	Read the following questions, and place a checkmark ( ) on the checkbox of your answer. </p>
+        <p class="title-2" id="demo-ti-two">Basahin ang sumusunod na tanong, at lagyan ng tsek ( ) ang checkbox ng iyong sagot.</p>
+    </div>
+    <div class="form-demo-con">
+    <form action="" method="POST" id="demo-form" autocomplete="off">
+        {% csrf_token %}
+        <ol class="oderList likert">
+            {% for i in questionsOne %}
+            <li class="demo-label questionsOne">{{i.question_part_one}}</li><span class="demo-tagalog">{{i.question_part_one_tagalog}}</span>
+            <p class="Onecurrent-id">choiceOne-{{i.id}}</p>
+            <label for="y-{{i.id}}" class="label_radio">
+                <input type="radio" id="y-{{i.id}}" class="radio-two" value="Yes" name="choiceOne-{{i.id}}" required="required">
+                <div class="radio_input"></div>
+                Yes/Oo
+            </label>
+
+            <label for="n-{{i.id}}" class="label_radio">
+                <input type="radio" id="n-{{i.id}}" class="radio-two" value="No" name="choiceOne-{{i.id}}" required="required">
+                <div class="radio_input"></div>
+                No/Hindi
+            </label>
+            {% endfor %}
+        </ol>
+        <div id="unorder" class="unorderList">
+            <ul>
+                {% for i in questionTwo %}
+                <h4 name="questions" class="questions questionsTwo">{{i.question_part_two}}</h4><span class="demo-tagalog">{{i.question_part_two_tagalog}}</span>
+                <p class="current-id">choice-{{i.id}}</p>
+                <ul class='likert'>
+                    <span class="line"></span>
+                    <li>
+                        <label for="sa-{{i.id}}"  class="label_radio">
+                            <input type="radio" id="sa-{{i.id}}" class="radio-two" value="Agree strongly" name="choice-{{i.id}}" >
+                            <div class="radio_input"></div>
+                            Agree strongly
+                        </label> 
+                    </li>
+                    <li>
+                        <label for="a-{{i.id}}"class="label_radio">
+                            <input type="radio" id="a-{{i.id}}" class="radio-two" value="Agree a little" name="choice-{{i.id}}" >
+                            <div class="radio_input"></div>
+                            Agree a little
+                        </label>   
+                    </li>
+                    
+                    <li>
+                        <label for="n1-{{i.id}}"class="label_radio"> 
+                            <input type="radio" id="n1-{{i.id}}"class="radio-two" value="Neutral" name="choice-{{i.id}}" >
+                            <div class="radio_input"></div>
+                            Neutral
+                        </label>
+                    </li>
+                    <li>
+                        <label for="d-{{i.id}}"class="label_radio"> 
+                            <input type="radio" id="d-{{i.id}}"class="radio-two" value="Disagree a little" name="choice-{{i.id}}" >
+                            <div class="radio_input"></div>
+                            Disagree a little
+                        </label>
+                    </li>
+                    <li>
+                        <label for="sd-{{i.id}}"class="label_radio">  
+                            <input type="radio" id="sd-{{i.id}}"class="radio-two" value="Disagree Strongly" name="choice-{{i.id}}" >
+                            <div class="radio_input"></div>
+                            Disagree Strongly
+                        </label>
+                    </li>
+                </ul>
+                {% endfor %}
+            </ul>
+            
+        </div>
+        
+        
+         <button type="submit" id="submit" name="demoSub" class="btn btn-primary demograp">continue</button>
+    </form>
+    </div>
+   
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script type="text/javascript">
+    var user_uuid= "{{ request.session.uuid }}"
+
+    var project = document.querySelector('#DemoTitle');
+    var titleOne = document.querySelector('#demo-title');
+    var titleTwo = document.querySelector('#demo-ti-two');
+
+    const btnSubmit = document.querySelector(".demograp");
+    var count = 0
+
+    function questions(str){
+      let questions_array = []
+      
+      for(i=0;i<str.length;i++){
+        let quest_idOne = str[i].innerHTML;
+        questions_array.push(quest_idOne);
+      }
+
+      return questions_array
+    }
+
+    // ==================================================
+    let questionsAOne = document.getElementsByClassName("questionsOne");
+    let questionsArrayOne = questions(questionsAOne)
+  
+
+   
+   let current_idOne = document.getElementsByClassName("Onecurrent-id");
+   let classNameOne = questions(current_idOne)
+   
+    let resultsOne = [];
+   
+//    ================================== Two questions ================
+    let questionsA = document.getElementsByClassName("questionsTwo");
+    let questionsArray = questions(questionsA)
+    var arrLength = questionsArray.length;
+
+   
+   let current_id = document.getElementsByClassName("current-id");
+   let className = questions(current_id)
+   let results = [];
+    
+    // ===================================================
+    var counter_two = 0;
+    $("#demo-form").on("submit", function(e){
+        ++count
+        e.preventDefault();
+        if(btnSubmit.classList.contains('newClassName')) {
+            results = className.map(function(el){
+
+                let answerTwo = document.querySelector("input[name='" + el+ "']:checked");
+                
+                if(answerTwo != null){
+                    answerTwo= document.querySelector("input[name='" + el + "']:checked").value;
+                    return answerTwo
+                }else{
+                    ++counter_two;
+                    if(counter_two > 1){
+                        if (counter_two === arrLength){
+                            counter_two = 0;
+                        }
+                    }else{
+                        Swal.fire({
+					        position: 'center',
+                            icon: 'warning',
+                            title: 'Please check your input',
+                            // showConfirmButton: false,
+                            // timer: 1500
+				        })
+                    }
+                }
+
+
+             });
+
+            var counting = 0; 
+            var pre_assess_dictionary = {}
+            for (let i = 0; i < questionsArray.length; i++) {
+                // console.log(results[i],"<<<<")
+                pre_assess_dictionary[questionsArray[i]] = results[i];
+                if(typeof results[i] === "undefined"){
+                    ++counting;
+                }else{
+                    counting = 0;
+                }
+            }
+            
+            if(counting < 1){
+                // ============================= Ajax==============
+                var url = '{% url "Assessment:demoTwoAnswer" %}'
+                $.ajax({
+                    type:'POST',
+                    url:url,
+                    data:{
+                        studentAnsTwo: JSON.stringify(pre_assess_dictionary),
+                        studentUUID: user_uuid,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success:function(data){
+                        console.log("save 2")
+                        redirect_url = '/personality-test/'+data.stud_uuid;
+                        window.location.replace(redirect_url);
+                    },
+                    error : function () {
+                        alert("Error Ajax Two");
+                    }
+                });
+            }
+
+        }else{
+
+            project.style.opacity = 0;
+            setTimeout(function(){ 
+                titleOne.innerHTML = "II. Place a checkmark ( ) on the box that represents your agreement or disagreement toward the following statements. ";
+                titleTwo.innerHTML = "Lagyan ng tsek ( ) ang kahon na magpapakita ng iyong pagsang-ayon o di pagsang-ayon sa mga sumusunod na pangungusap.";
+                project.style.opacity = 1;
+            },500);
+
+            const ol = document.querySelector(".oderList");
+            ol.classList.toggle("orderDisplay");
+
+            var display_ul = document.getElementById("unorder");
+            display_ul.classList.remove("unorderList");
+
+            resultsOne = classNameOne.map(function(el){
+                let answer = document.querySelector("input[name='" + el + "']:checked").value;
+                return answer
+             });
+
+            var pre_assess_dictionaryOne = {};
+           
+            for (let i = 0; i < questionsArrayOne.length; i++) {
+                pre_assess_dictionaryOne[questionsArrayOne[i]] = resultsOne[i];
+                
+            }
+
+
+            btnSubmit.classList.toggle("newClassName");
+
+            // ============================= Ajax==============
+            var url = '{% url "Assessment:demoOneAnswer" %}'
+            $.ajax({
+                type:'POST',
+                url:url,
+                data:{
+                    studentAnsOne: JSON.stringify(pre_assess_dictionaryOne),
+                    studentUUID: user_uuid,
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success:function(data){
+                    console.log("save 1")
+                },
+                error : function () {
+                    alert("Error Ajax");
+                }
+		    });
+
+        }
+    });
+</script>
+
+{% endblock %}

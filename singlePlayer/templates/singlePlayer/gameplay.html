@@ -1,0 +1,671 @@
+{% extends 'singlePlayer/base.html' %} 
+{% block title %} 
+Gameplay
+{% endblock %} 
+{% load static %}
+
+{% block content %}
+<div id="myProgress">
+    <div id="progress-bar-time"></div>
+</div>
+<div id='player-game-on'>
+  <div class="gameplay-container">
+      <div class="main-gameplay ">
+
+        <div class="game-score">
+          <span>Score:</span> <span id="s_game">0</span>
+        </div>
+
+        <div class="question-con">
+          <p class="quest-first"><span class='tab q11'></span><span class="q1"></span> </p>
+
+          <div class="second-quest">
+            <p><span class='tab q22'></span><span class="q2"></span> </p>
+            <p class="operator"></p>
+          </div>
+        </div>
+
+        <div class="line"></div>
+
+          <div class="game-button-container">
+            <div id="option-1" onClick="userAnswerClicked(this.id)" class="answer-option-button">
+            </div>
+            <div id="option-2" onClick="userAnswerClicked(this.id)" class="answer-option-button">
+            </div>
+            <div id="option-3" onClick="userAnswerClicked(this.id)" class="answer-option-button"> 
+            </div> 
+          </div>
+
+        <img id='img-pause' src="{% static 'singlePlayer/img/Pause.png' %}" alt="Pause">
+      </div>     
+    </div>
+</div>
+
+<!-- PAUSE THE GAME FORM  -->
+<!-- https://stackoverflow.com/questions/64606513/volume-slider-for-every-audio-player-in-html5-and-javascript -->
+<div id="game-on-paused" class="game-on-paused">
+    <div class="paused-container">
+      <p class='paused-title'>Paused</p>
+
+      <label for="music" id='music-label' class="label_radio paused-label">
+          <input type="radio" class="radio-two" id="music-input" checked/>
+          <div class="radio_input"></div>
+          <span id='music-v'>music volume</span>
+      </label>
+
+      <div class="range-box">
+        <input type="range" id="range-input-music" class="range-input-music" min="0" max="100" value="100">
+      </div></br>
+
+
+
+      <label for="sound" id='sound-label' class="label_radio sound-label">
+          <input type="radio" class="radio-two" id="sound-input" checked/>
+          <div class="radio_input"></div>
+          <span id='sound-v'>sound volume</span>
+      </label>
+
+      <div class="range-box">
+        <input type="range" id="range-input-sound" class="range-input-sound" min="0" max="100" value="100">
+      </div></br>
+
+
+      <button type="button" name="submit" class="btn btn-primary" id="end-game">end game</button>  
+      <img id='img-play' src="{% static 'singlePlayer/img/Play.png' %}" class='play' alt="Play">
+    </div>
+</div>
+
+<div class="done-playing" id='done-playing'>
+  <img id='img-logo' src="{% static 'Assessment/img/logo.png' %}" alt="Logo">
+  <div class="title-done">
+    <p class='ti'>Time's</p>
+    <p class='ti'>up!</p>
+
+    <div class="game-results">
+      <p>Score: <span id="end_game-final">0</span></p>
+      <p>Correct Answers: <span id="c-correct">0</span></p>
+      <p>Wrong Answers: <span id="c-wrong">0</span></p>
+    </div>
+    </br>
+    <button type="button" name="submit" class="btn btn-primary" id="retry">retry</button> 
+    <button type="button" name="submit" class="btn btn-primary" onclick="returnMenu()" id="return-menu">return to menu</button>  
+  </div>
+</div>
+
+<div class="no-display">
+  <div class="user-answer-container">
+    <div id="user-answer">
+    </div>
+  </div> 
+</div> 
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+  console.log(`Level: {{ settings.level }}`);
+  console.log(`Arithmetic: {{ settings.arithmetic }}`);    
+  console.log(`Difficulty: {{ settings.difficulty }}`);  
+  console.log(`Speed: {{ settings.speed }}`);  
+  console.log(`Timer: {{ settings.countdown }}`);  
+  console.log(`Point: {{ settings.scoring }}`);
+  console.log('---------------------------------');
+
+  var user_uuid= "{{ request.session.uuid }}"
+  var speed = "{{ settings.speed }}"
+  
+  const gameplayTime = "{{ settings.countdown }}";
+  const pauseButton= document.querySelector('#img-pause');
+  const playButton= document.querySelector('#img-play');
+
+  const barTime = document.querySelector("#myProgress");
+
+  const retryBtn= document.querySelector('#retry');
+  const end_gameM = document.querySelector('#end-game');
+
+
+  const pausedForm = document.getElementById("game-on-paused");
+  const resumeForm = document.getElementById('player-game-on');
+  const donePlaying = document.getElementById('done-playing');
+
+  const c_correct = document.getElementById("c-correct");
+  const c_wrong = document.getElementById("c-wrong");
+
+
+
+  const musicLabel = document.querySelector("#music-label");
+  const musicRadioButton = document.getElementById("music-input");
+  const soundLabel = document.querySelector("#sound-label");
+  const soundRadioButton = document.getElementById("sound-input");
+
+  const progressBarTimer = document.getElementById("progress-bar-time");
+
+  let game_question;
+  let game_history = {};
+  let game_answer = [];
+
+  let totalQuestions = 0;
+  
+
+  var settings = JSON.parse("{{json_settings|escapejs}}");
+  var gameRoundState = JSON.parse("{{json_game_round_state|escapejs}}");
+  var data = JSON.parse("{{json_data|escapejs}}");
+  initCountDown(data, settings, gameRoundState);
+
+  let countCorrect = 0;
+  let countWrong = 0;
+  let score = '';
+
+  if(speed == "untimed"){
+    barTime.classList.add("myProgress");
+  }else{
+    console.log('No');
+  }
+  
+  async function initCountDown(data, settings, gameRoundState){
+    let questionNumber = 1;
+    let questionAndAnswer = {};
+    
+
+    var interval;
+    var gameSeconds = 0;
+    var timerValue;
+    let playerPauseTheGame = true;
+    const oneSecondSpeed  = 1000;
+
+    window.onload = startGamePlay();
+    function startGamePlay() {    
+        clearInterval(interval);
+        interval = setInterval(gamePlayStart, oneSecondSpeed);
+
+        function gamePlayStart() {
+              if (gameSeconds >= gameplayTime) {
+                gameSeconds = 1;
+                clearInterval(interval);
+              } else {
+                  gameSeconds++;
+                  // Waiting for the 1 sec promise 
+                  gameRoundState = chkIfNextQuestion(data, gameRoundState, questionAndAnswer, questionNumber);
+                  
+                  let gameData = organizeData(questionAndAnswer);
+                  getQuestions(gameData);
+                  gameRoundState.next_question = false;
+
+                  let userAnswer = document.getElementById('user-answer').innerText;
+                  if (userAnswer == gameRoundState["correct_answer"]){
+                    let audio = new Audio("{% static 'Assessment/music/IBM_ui_Right.wav' %}");
+                    audio.play()
+                    // Change background-color to green if user click the correct answer. 
+                    game_answer.push(`correct(${userAnswer})`);
+                    game_answer = [];
+                    changeBackground("#06ca06")
+                    questionNumber ++;
+                    ++countCorrect;
+
+                    gameRoundState["next_question"] = true;
+                    gameRoundState["score"] = gameRoundState["score"] + settings["scoring"];
+                    score = gameRoundState["score"];
+                    
+                    document.getElementById('s_game').innerHTML = score;
+                    // Continue
+                    // return;
+                  
+                  }else if (userAnswer != gameRoundState["correct_answer"] && userAnswer != ""){
+                    game_answer.push(userAnswer);
+
+                    let audio = new Audio("{% static 'Assessment/music/IBM_ui_Wrong.wav' %}");
+                    audio.play()
+                    // Change background-color to red if user click the wrong answer. 
+                    changeBackground("#d02722");
+
+                    ++countWrong; 
+
+                    gameSeconds = gameSeconds + 2;
+                    // gameSeconds = gameSeconds + 3;
+                    document.getElementById('user-answer').innerHTML = "";
+                  
+                  }else if (userAnswer == ""){
+                    document.getElementById('user-answer').innerHTML = "";
+                    // gameSeconds++;
+                  }
+
+                  timerValue = Math.floor((gameSeconds / gameplayTime) * 100);
+                  if(timerValue > 100){
+                    timerValue = 100;
+                  }
+
+
+                  progressBarTimer.style.width = `${timerValue}%`;
+
+                  if(timerValue > 80){
+                    console.log('haha');
+                    let audio = new Audio("{% static 'Assessment/music/IBM_ui_Time.wav' %}");
+                    audio.play()
+                  }
+                  
+                  if(timerValue === 100){  
+                    let audio = new Audio("{% static 'Assessment/music/IBM_ui_GameOver.wav' %}");
+                    audio.play()              
+                    setTimeout(function(){                      
+                      resumeForm.classList.add("pause-class");
+                      donePlaying.classList.remove("done-playing");
+
+                      c_correct.innerHTML = countCorrect;
+                      c_wrong.innerHTML = countWrong;
+                      document.getElementById('end_game-final').innerHTML = score;
+                  // ============================= Ajax==============
+                  var url = '{% url "singlePlayer:userGameResultsAjax" %}'
+                  $.ajax({
+                      type:'POST',
+                      url:url,
+                      data:{
+                          game_history: JSON.stringify(game_history),
+                          correct_answer: countCorrect,
+                          wrong_answer: countWrong,
+                          total_questions: totalQuestions,
+                          speed:speed,
+                          studentUUID: user_uuid,
+                      },
+                      success:function(data){
+                          console.log("save 1")
+                      },
+                      error : function () {
+                          alert("Error Ajax");
+                      }
+                  });
+
+                    }, 500);
+                    
+                  }
+              }
+              game_history[game_question] = game_answer;
+              
+            }
+            
+        }
+        
+
+
+        
+        function setIntervalStop(){
+            clearInterval(interval);
+        }
+
+        // Player pause the game ...
+        pauseButton.addEventListener('click',function(){
+          if(playerPauseTheGame == true){
+            let audio = new Audio("{% static 'Assessment/music/IB_ui_Confirm.wav' %}");
+            audio.play()
+            setIntervalStop();
+            resumeForm.classList.add("pause-class");
+            pausedForm.classList.remove("game-on-paused"); 
+            playerPauseTheGame = false;
+          }
+
+          end_gameM.addEventListener('click',function(){
+            c_correct.innerHTML = countCorrect;
+            c_wrong.innerHTML = countWrong;
+            document.getElementById('end_game-final').innerHTML = score;
+            
+            pausedForm.classList.add("game-on-paused");
+            barTime.classList.add("myProgress");
+            donePlaying.classList.remove("done-playing");
+          });
+        });
+
+        // Player resume the game ...
+        playButton.addEventListener('click',function(){
+          if(playerPauseTheGame == false){
+            let audio = new Audio("{% static 'Assessment/music/IBM_ui_Confirm.wav' %}");
+            audio.play()
+            resumeForm.classList.remove("pause-class");
+            pausedForm.classList.add("game-on-paused");  
+            startGamePlay();
+            playerPauseTheGame = true;
+          }
+        });
+        
+        radioButtonsVolume(musicLabel, musicRadioButton);
+        radioButtonsVolume(soundLabel, soundRadioButton);
+
+        function radioButtonsVolume(label, input){
+          label.addEventListener('click', function(){
+            input.checked = !input.checked; 
+          });
+        }
+
+  }
+
+  retryBtn.addEventListener('click',function(){
+    window.location.replace('/singleplayer/settings/'+ user_uuid);
+  });
+
+  function changeBackground(newColor){
+    var mainBackground = document.getElementById('second-base_id');
+    var originalColor = getComputedStyle(mainBackground).backgroundColor;
+    mainBackground.style.backgroundColor = newColor;
+
+    setTimeout(function(){
+      mainBackground.style.backgroundColor = originalColor; 
+    }, 200);
+  }
+  
+  // UTILITY FUNCTIONS -todo: seperate to another file
+  function chkIfNextQuestion(data, gameRoundState, questionAndAnswer, questionNumber){
+    if (gameRoundState.next_question === true){
+      document.getElementById('user-answer').innerHTML = "";
+      gameRoundState = initQuestion(data, gameRoundState);
+      questionAndAnswer[questionNumber] = [gameRoundState.correct_answer, gameRoundState.question, gameRoundState.options];
+      renderGameStates(gameRoundState);
+    }
+    return gameRoundState;
+  }
+
+  
+  
+  function initQuestion(data, gameRoundState){
+    
+    data = filter_data(data);
+    
+    // Randomly pick a correct answer in the data
+    let answer_index = Math.floor(Math.random() * Object.keys(data).length);
+    let key_list = Object.entries(data);
+    let correct_answer = key_list[answer_index][0];
+    gameRoundState["correct_answer"] = correct_answer;
+    console.log('Answer: ', gameRoundState["correct_answer"]);
+    
+   
+
+
+    // Randomly pick a question from the correct answer
+    let question_index = Math.floor(Math.random() * data[correct_answer].length);
+    let question = data[correct_answer][question_index];
+    gameRoundState["question"] = question;
+    game_question = gameRoundState["question"];
+    
+    totalQuestions++
+    
+
+    //game_history[game_question] =
+
+    // Randombly pick two wrong answers as options for the user 
+    let optionOne = "";
+    let optionTwo = "";
+    while(true){
+      optionOne = Math.floor(Math.random() * (Object.keys(data).length));
+      optionTwo = Math.floor(Math.random() * (Object.keys(data).length));
+
+      if (optionOne != answer_index && optionTwo != answer_index){
+        break;
+      }
+    } 
+    optionOne = key_list[optionOne][0];
+    optionTwo = key_list[optionTwo][0];
+
+    let options = [optionOne, optionTwo]
+    let posIndex = Math.floor(Math.random() * 3);
+    options.splice(posIndex, 0, correct_answer);
+    gameRoundState["options"] = options;
+    
+    return gameRoundState
+  }
+
+
+  function returnMenu(){
+      window.location.replace('/ibigkas-menu/'+ user_uuid);
+  }
+
+  function filter_data(data){
+    
+    let doc = {};
+
+    for (let i = 1; i < data.length; i++){
+
+      let line = data[i].split(':');
+      let answer = line[0].replace(" ", "");
+      let question = line[1].split(",");
+
+      for(let j = 0; j < question.length; j++){
+        question[j] = question[j].replace(" ", "");
+      }
+      question[question.length -1] = question[question.length - 1].replace("\n", "");
+      doc[answer] = question;
+    }
+    return doc;
+  }
+
+  function renderGameStates(gameRoundState){
+
+    let optionsDiv = document.getElementsByClassName("answer-option-button");
+    
+    optionsDiv[0].innerHTML = gameRoundState["options"][0];
+    optionsDiv[1].innerHTML = gameRoundState["options"][1];
+    optionsDiv[2].innerHTML = gameRoundState["options"][2]; 
+
+  }
+
+  function userAnswerClicked(id){
+    document.getElementById('user-answer').innerHTML = document.getElementById(id).innerText;
+  }
+
+  function organizeData(rawData){
+    gameData = {};
+    newData = {};
+
+    let dataLength = Object.keys(rawData).length;
+    for(let i = 0; i < dataLength; i ++){
+      newData["A" + (i + 1)] = rawData[i + 1][0];
+      newData["Q" + (i + 1)] = rawData[i + 1][1];
+      newData["Option for Q" + (i + 1)] = rawData[i + 1][2];
+      gameData[i] = newData;
+      newData = {};
+    }
+    
+    return gameData;
+  }
+
+
+
+
+
+  function getQuestions(data){    
+    let arithmetic = ['+', '-', 'x', ' / '];
+    let operator;
+    let questionOne;
+    let questionTwo;
+
+    for(let i = 0; i <  Object.keys(gameData).length; i++){
+      
+      for(let j of arithmetic){
+
+        if(j === ' / '){
+          if(gameData[i]["Q" + (i + 1)].includes(j)) { 
+
+          operator = j;
+          questionOne = gameData[i]["Q" + (i + 1)].split(j)[0];
+          questionTwo = gameData[i]["Q" + (i + 1)].split(j)[1];
+          break;
+        }
+        
+        }
+        else if(gameData[i]["Q" + (i + 1)].includes(j)) { 
+          operator = j;
+          questionOne = gameData[i]["Q" + (i + 1)].split(j)[0];
+          questionTwo = gameData[i]["Q" + (i + 1)].split(j)[1];
+          break;
+        }
+
+      }
+
+    }
+
+
+    if(operator === ' / '){
+      operator = '÷';
+    }else if(operator === 'x'){
+      operator = '×';
+    }
+
+    let wholeNumberOne = "";
+    let wholeNumberTwo = "";
+
+
+    // posible
+    function getFrequency(string) {
+      var freq = {};
+      for (var i=0; i<string.length;i++) {
+          var character = string.charAt(i);
+          if (freq[character]) {
+            freq[character]++;
+          } else {
+            freq[character] = 1;
+          }
+      }
+
+      let textLabel;
+
+      for (var key in freq) {
+          if (freq.hasOwnProperty(key)) {
+          
+              if(key === "-" && freq[key] > 1){
+                return textLabel = "Yes";
+              }else{
+                textLabel = "No";
+              }
+          }
+      }
+      return textLabel;
+    };
+    
+
+    let ttquestionOne = questionOne.replace(/\s+/g, '-');
+    let qqquestionTwo = questionTwo.replace(/\s+/g, '-');
+
+
+    let statusQ;
+    if(questionOne.length === 6 || questionTwo.length === 6 || questionOne.length === 5 || questionTwo.length === 5 || questionOne.length === 4 || questionTwo.length === 4)
+    {
+      if(questionOne.length === 6)
+      {
+        questionOne = questionOne.replace(/\s+/g, '-');
+        statusQ = getFrequency(questionOne);
+        if(operator === "÷"){
+          wholeNumberOne = questionOne.split('-')[0];
+          questionOne = questionOne.split('-')[1];
+        }
+
+        if(statusQ === "Yes")
+        {
+          wholeNumberOne = questionOne.split('-')[0];
+          questionOne = questionOne.split('-')[1];
+        }
+        else
+        {
+          questionOne = questionOne.split('-')[0];
+        }
+
+        
+      }
+      
+      if(questionTwo.length === 6)
+      {
+        questionTwo = questionTwo.replace(/\s+/g, '-');
+        statusQ = getFrequency(questionTwo);
+        if(statusQ === "Yes")
+        {
+          wholeNumberTwo = questionTwo.split('-')[1];
+          questionTwo = questionTwo.split('-')[2];
+
+        }
+        else
+        {
+          questionTwo = questionTwo.split('-')[1];
+
+        }
+      }
+
+      if(questionOne.length === 4)
+      {
+        questionOne = questionOne.replace(/\s+/g, '-');
+        questionOne = questionOne.split('-')[0];
+
+      }
+    }
+    if(questionOne.length === 3)
+    {
+      questionOne = questionOne.replace(/\s/g, "");
+
+    }
+
+    if(questionTwo.length === 3)
+    {
+      questionTwo = questionTwo.replace(/\s/g, "");
+
+    }
+    if(questionOne.length === 2)
+    {
+      questionOne = questionOne.replace(/\s/g, "");
+
+    }
+    if(questionTwo.length === 2)
+    {
+      questionTwo = questionTwo.replace(/\s/g, "");
+
+    }
+    if(questionOne.length >= 7)
+    {
+      // Replace whitespace to dash
+      questionOne = questionOne.replace(/\s+/g, '-');
+
+      wholeNumberOne = questionOne.split('-')[0];
+      questionOne = questionOne.split('-')[1];
+
+    }
+    if(questionTwo.length >= 7)
+    {
+      questionTwo = questionTwo.replace(/\s+/g, '-');
+
+      wholeNumberTwo = questionTwo.split('-')[1];
+      questionTwo = questionTwo.split('-')[2];
+
+    }
+    else
+    {
+      questionOne = questionOne.replace(/\s/g, "");
+      questionTwo = questionTwo.replace(/\s/g, "");
+
+    } 
+    
+    
+  
+
+    document.getElementsByClassName("q11")[0].innerHTML = wholeNumberOne;
+    document.getElementsByClassName("q22")[0].innerHTML = wholeNumberTwo;    
+    document.getElementsByClassName("q1")[0].innerHTML = questionOne;
+    document.getElementsByClassName("q2")[0].innerHTML = questionTwo;
+    document.getElementsByClassName("operator")[0].innerHTML = operator;
+  }
+
+  // PAUSE FORM JAVASCRIPT
+  var rangeInputMusic = document.getElementById('range-input-music');
+  var rangeInputSound = document.getElementById('range-input-sound');
+
+
+  function getRangeValue()
+  {
+    var rangeValue = Number(rangeInputMusic.value);
+    var rangeValueSound = Number(rangeInputSound.value);
+
+    rangeInputMusic.style.background = `linear-gradient(90deg, var(--border-color) ${rangeValue+0.5+'%'}, #dedede ${rangeValue+'%'})`;
+    rangeInputSound.style.background = `linear-gradient(90deg, var(--border-color) ${rangeValueSound+0.5+'%'}, #dedede ${rangeValueSound+'%'})`;
+
+  }
+
+  rangeInputMusic.oninput = function(){getRangeValue();}
+  rangeInputSound.oninput = function(){getRangeValue();}
+
+  getRangeValue();
+
+</script>
+{% endblock %}

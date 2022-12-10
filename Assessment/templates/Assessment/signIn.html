@@ -1,0 +1,84 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %}
+{% block title %}Sign In{% endblock %}
+{% load static %}
+{% block content %}
+<div class="multi-sign-in logIn_page">
+    <img src="{% static 'Assessment/img/logo.png' %}" alt="ibigkas logo">
+    <form action="" autocomplete="off" id="login--form">
+        {% csrf_token %}
+        <div class="login-form-multi">
+            <input type="text" id="sign-user" onkeyup="success() "name="username" placeholder="Enter username..." ><br>
+            <button type="submit" id="button-signIn" name="signIn" class="btn btn-primary create-acc" disabled>sign in</button>
+        </div>
+    </form>
+    <button onclick="back()" type="button" id="back" class="btn btn-primary host-game-back">back</button>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript"> 
+
+
+     function success() {
+        if(document.getElementById("sign-user").value==="") {   
+            document.getElementById('button-signIn').disabled = true; 
+        } else {    
+            document.getElementById('button-signIn').disabled = false;
+        }
+    }
+
+    var count = 1;
+
+    $("#login--form").on("submit", function(e){
+	e.preventDefault();
+        var signIn_user = document.getElementById("sign-user").value;
+        var url = '{% url "Assessment:multi_signIn" %}'
+        $.ajax({
+			type:'POST',
+			url:url,
+			data:{
+                signIn_user: signIn_user,
+				csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+			},
+			success:function(data){
+                
+                if(data === "Please check your username!"){
+                    if(count === 3){
+                        alert("Please create new account!");
+                         window.location.replace('/create-account/');
+                    }else{
+                        ++count;
+                        alert("Please check your username!");
+                    }
+                }
+                else{
+                    let audio = new Audio("{% static 'Assessment/music/IBM_ui_Confirm.wav' %}");
+                    audio.play()
+                    setTimeout(function(){ 
+                        redirect_url = '/ibigkas-menu/'+data.credential;
+                        window.location.replace(redirect_url);
+                    }, 400);
+                }
+                
+			},
+            error : function () {
+                alert("Error Ajax");
+            }
+		});
+    });
+
+    function create(){
+        location.href='{% url "Assessment:createAccount" %}';
+    }
+
+
+ 
+    function back(){
+        let audio = new Audio("{% static 'Assessment/music/IBM_ui_Back.wav' %}");
+        audio.play()
+        setTimeout(function(){ 
+           location.href='{% url "Assessment:login_page" %}';
+        }, 400);
+    }
+    
+</script>
+{% endblock %}

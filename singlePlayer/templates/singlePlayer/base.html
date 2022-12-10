@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %}</title>
+    <!-- favicon  -->
+    <link rel="shortcut icon" href="{% static 'Assessment/img/logo.png' %}">
+     <!-- ----- -->
+    <link rel="stylesheet" href="{% static 'singlePlayer/styles/bootstrap.css' %}"/>
+	  <link rel="stylesheet" href="{% static 'singlePlayer/styles/gameplay.css'%}?{% now "U" %}"">
+	  <link rel="stylesheet" href="{% static 'singlePlayer/styles/singlePlayerHowtoPlay.css'%}?{% now "U" %}"">
+	  <link rel="stylesheet" href="{% static 'singlePlayer/styles/singlePlayerMenu.css'%}?{% now "U" %}"">
+	  <link rel="stylesheet" href="{% static 'singlePlayer/styles/singlePlayerSettings.css'%}?{% now "U" %}"">
+  </head>
+  <body oncopy="return false" oncut="return false" onpaste="return false">
+
+	<div class="main">
+		<div class="second-base" id="second-base_id">
+    		{% block content %} {% endblock %}
+		</div>
+	</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block scripts %} {% endblock %}
+  </body>
+</html>

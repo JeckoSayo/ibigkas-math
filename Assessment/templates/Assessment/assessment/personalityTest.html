@@ -1,0 +1,138 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %}
+
+{% block title %}Personality Test{% endblock %}
+
+{% block content %}
+<div class="conPreAss">
+    
+    <div class="assessment-title">
+        <p class="main-title-q">Personality Test</p>
+    </div>
+
+<div class="overall-con">
+    <p class="description">Here are some statements that may or may not describe what you are like.  In the blank next to each statement, click your response or answer that shows how much you agree or disagree that it describes you.<br><br> For example, do you agree that you are someone who is bossy?  Click agree strongly if you agree strongly, agree a little if you agree a little, neutral if you neither agree nor disagree, disagree a little if you disagree a little, or disagree strongly if you disagree strongly. Ask if you don’t know what a word means!</p>
+    <div class="assessment-container">
+        <form action="" method="POST" id="assessment-form" autocomplete="off">
+        {% csrf_token %}
+            
+            {% for i in assess %}
+    
+                 <h4 name="questions" class="questions">{{ forloop.counter }}.&ensp;{{i.questions}}</h4>
+
+                <p class="current-id">choice-{{i.id}}</p>
+                <ol class='likert'>
+                    <span class="line"></span>
+                    <li>
+                      <input type="radio" id="sa-{{i.id}}" value="Agree strongly" name="choice-{{i.id}}" required="required">
+                      <label for="sa-{{i.id}}">Agree strongly</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="a-{{i.id}}" value="Agree a little" name="choice-{{i.id}}" required="required">
+                      <label for="a-{{i.id}}">Agree a little</label>
+                      
+                    </li>
+                    <li>
+                      <input type="radio" id="n-{{i.id}}" value="Neutral" name="choice-{{i.id}}"  required="required" >
+                      <label for="n-{{i.id}}">Neutral</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="d-{{i.id}}" value="Disagree a little" name="choice-{{i.id}}" required="required">
+                      <label for="d-{{i.id}}">Disagree a little</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="sd-{{i.id}}" value="Disagree Strongly" name="choice-{{i.id}}" required="required">
+                      <label for="sd-{{i.id}}">Disagree Strongly</label>
+                    </li>
+                  </ol>
+
+            {% endfor %}
+
+            <button type="submit" id="submit" name="preAssessment" class="btn btn-primary preSub">Submit</button>
+        </form>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+
+  
+    var user_uuid= "{{ request.session.uuid }}"
+
+    let questionsA = document.getElementsByClassName("questions");
+    let questionsArray = []
+    for(i=0;i<questionsA.length;i++){
+        let quest_id = questionsA[i].innerHTML;
+        questionsArray.push(quest_id);
+   }
+
+
+
+   let current_id = document.getElementsByClassName("current-id");
+   let className = [];
+   let id; 
+   for(i=0;i<current_id.length;i++){
+        id = current_id[i].innerHTML;
+        className.push(id);
+   }
+   
+    let results = [];
+ 
+
+    
+    $("#assessment-form").on("submit", function(e){
+	e.preventDefault();
+
+        results = className.map(function(el){
+            return document.querySelector("input[name='" + el + "']:checked").value;
+        });
+
+        var pre_assess_dictionary = {}
+        for (let i = 0; i < questionsArray.length; i++) {
+            pre_assess_dictionary[questionsArray[i]] = results[i];
+        }
+
+        var url = '{% url "Assessment:preAnswer" %}'
+        $.ajax({
+			type:'POST',
+			url:url,
+			data:{
+                studentAns: JSON.stringify(pre_assess_dictionary),
+                studentUUID: user_uuid,
+				csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+			},
+			success:function(data){
+                Swal.fire({
+					position: 'center',
+                    icon: 'success',
+                    title: data,
+                    showConfirmButton: false,
+                    timer: 1500
+				})
+
+                // sleep time expects milliseconds
+                function sleep (time) {
+                    return new Promise((resolve) => setTimeout(resolve, time));
+                }
+
+                // Usage!
+                sleep(1200).then(() => {
+                    // Do something after the sleep!
+                    redirect_url = '/pre-test/'+user_uuid;
+                    window.location.replace(redirect_url);
+                });
+                
+                
+			},
+            error : function () {
+                alert("Error Ajax");
+            }
+		});
+		
+	});
+    
+
+
+    
+</script>
+{% endblock %}

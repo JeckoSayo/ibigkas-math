@@ -1,0 +1,53 @@
+@font-face { font-family: Promo-bold; font-weight: bold; src: url('../styles/Promo-Bold.otf'); } 
+@font-face { font-family: Promo-normal; src: url('../styles/Promo-Normal.otf');}
+@font-face { font-family: Promo-semi; src: url('../styles/Promo-SemiBold.otf');}
+
+:root {
+	--body-bg: #fff8e8;
+	--border-color:#e49076;
+
+	--hover-color:#f5f1e5;
+	--hover-second-color:#f58a76;
+	--hover-text-color:#fef8ea;
+
+	--second-color:#086788;
+
+	--text-title-color:#ccc2d9;
+	--text-color:#e49076;
+
+	--text-size:17px;
+	--font-fam-bold:Promo-bold;
+	--font-semi-bold:Promo-semi;
+	--font-fam-normal:Promo-normal;
+  }
+  .menu-options{
+    margin-top: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .menu-options button{
+    width: 10rem !important;
+    height: 3rem;
+    margin: 11px;
+    font-size: 20px;
+  }
+  .menu-options h1{
+    color: var(--text-title-color);
+    font-family: var(--font-fam-bold);
+    margin-bottom: 2rem;
+  }
+  .menu-option2 h1{
+    color: var(--text-title-color);
+    font-family: var(--font-fam-bold);
+    margin-bottom: 2rem;
+  }
+
+  .menu-back{
+    position: absolute;
+    bottom: 48px;
+    left: 44px;
+  }
+  

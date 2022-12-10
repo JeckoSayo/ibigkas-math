@@ -1,0 +1,38 @@
+{% extends 'singlePlayer/base.html' %} 
+{% block title %} 
+Ibigkas Math! Singleplayer 
+{% endblock %} 
+{% load static %}
+{% block content %}
+
+<form method="POST" action="">
+{% csrf_token %}
+<div class="menu-options">
+  <h1>Single Player:</h1>
+        <button onclick="start_game()" type="button" name="host-game" class="btn btn-primary">start game</button>
+        <button type="button" name="how-to-play" class="btn btn-primary">how to play</button>
+</div>
+
+<button onclick="backMain()" type="button" class="btn btn-primary menu-back">back</button>
+</form>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    var user_uuid= "{{ request.session.uuid }}"
+    function start_game(){
+        let audio = new Audio("{% static 'Assessment/music/IBM_ui_Confirm.wav' %}");
+        audio.play()
+        setTimeout(function(){ 
+            window.location.replace('/singleplayer/settings/'+ user_uuid);
+        }, 400);
+    }
+    function backMain(){
+        let audio = new Audio("{% static 'Assessment/music/IBM_ui_Back.wav' %}");
+        audio.play()
+        setTimeout(function(){ 
+            window.location.replace('/ibigkas-menu/'+ user_uuid);
+        }, 400);
+    }
+</script>
+{% endblock %}
+

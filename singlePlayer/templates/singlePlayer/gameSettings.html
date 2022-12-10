@@ -1,0 +1,352 @@
+{% extends 'singlePlayer/base.html' %} {% block title %}Settings{% endblock %}
+{% block content %}
+{% load static %}
+<form method="POST" class="needs-validation" id="player_settings">
+  {% csrf_token %}
+  <div class="second-valid">
+    <h3 class="menu-title top-title arithmetic-label" style="display:inline; padding-left:20px;">Arithmetic:</h3>
+    <h3 class="menu-title top-title difficulty-label" style="display:inline; padding-left:70px;">Difficulty:</h3>
+
+    <div class="settings-center">
+      
+      <div class="select-box">
+        <div class="over">
+          <div class="options-container">
+            <div class="option">
+
+              <input type="radio" class="radio" id="addition" name="arithmetic" value="addition"/>
+              <label for="addition">Addition</label>
+            </div>
+            <div class="option">
+              <input type="radio" class="radio" id="subtraction" name="arithmetic" value="subtraction"/>
+              <label for="subtraction">Subtraction</label>
+            </div>
+            <div class="option">
+              <input type="radio" class="radio" id="multiPlayer" name="arithmetic" value="multiplication"/>
+              <label for="multiPlayer">Multiplication</label>
+            </div>
+            <div class="option">
+              <input type="radio" class="radio" id="division" name="arithmetic" value="division"/>
+
+              <label for="division">Division</label>
+            </div>
+          </div>
+        </div>
+        <div class="selected" id="arithmetic-selection">
+          <p id="arithmetic-selectionTwo">Addition</p>
+          <div class="arrow colored"></div>
+        </div>
+      </div>
+
+      <div class="select-box-two">
+        <div class="options-container-two">
+          <div class="option-two">
+            <input type="radio" class="radio" id="very_easy" name="difficulty" value="very_easy"/>
+            <label for="very_easy">VERY EASY</label>
+          </div>
+          <div class="option-two">
+            <input type="radio" class="radio" id="easy" name="difficulty" value="easy"/>
+            <label for="easy">EASY</label>
+          </div>
+          <div class="option-two">
+            <input type="radio" class="radio" id="medium" name="difficulty" value="medium"/>
+            <label for="medium">MEDIUM</label>
+          </div>
+          <div class="option-two">
+            <input type="radio" class="radio" id="hard" name="difficulty" value="hard"/>
+            <label for="hard">HARD</label>
+          </div>
+          <div class="option-two">
+            <input type="radio" class="radio" id="very_hard" name="difficulty" value="very_hard"/>
+            <label for="very_hard">VERY HARD</label>
+          </div>
+          </div>
+
+          <div class="selected-two" id="difficulty-selection">
+            <p id="difficulty-selectionTwo">VERY EASY</p>
+          <div class="arrow colored"></div>
+        </div>
+      </div>
+      
+      
+
+    </div>
+
+    <div class="select-box-three">
+      <div id="error"></div>
+      <h3 class="menu-title">Year Level:</h3>
+        <div class="options-container-three">
+          <div class="option-three">
+            <label for="lvl1" class="label_radio">
+              <input type="radio" class="radio-two" id="lvl1" name="lvl" value="lvl1" required/>
+              <div class="radio_input"></div>
+              Grade 1
+            </label>
+          </div>
+          <div class="option-three">
+            <label for="lvl2" class="label_radio">
+              <input type="radio" class="radio-two" id="lvl2" name="lvl" value="lvl2"/>
+              <div class="radio_input"></div>
+              Grade 2
+            </label>
+          </div>
+          <div class="option-three">
+            <label for="lvl3" class="label_radio">
+              <input type="radio" class="radio-two" id="lvl3" name="lvl" value="lvl3"/>
+              <div class="radio_input"></div>
+              Grade 3
+            </label>
+          </div>
+        </div>
+
+       
+    </div>
+
+    <div class="speed-container sing1Player">
+      <div id="errortwo"></div>
+      <h3 class="menu-title">Speed:</h3>
+      <div class="speed-settings">
+        <div>
+          <label for="Untimed" class="label_radio">
+            <input type="radio" class="radio-two" id="Untimed" name="speed" value="Untimed" required="required"/>
+            <div class="radio_input"></div>
+            Untimed
+          </label><br />
+          <label for="very_slow" class="label_radio">
+            <input type="radio" class="radio-two" id="very_slow" name="speed" value="very_slow" />
+            <div class="radio_input"></div>
+            Very Slow
+          </label><br />
+          <label for="slow" class="label_radio">
+            <input type="radio" class="radio-two" id="slow" name="speed" value="slow" />
+            <div class="radio_input"></div>
+            Slow
+          </label><br />
+        </div>
+        <dir>
+          <label for="medium-two" class="label_radio">
+            <input type="radio" class="radio-two" id="medium-two" name="speed" value="medium-two" />
+            <div class="radio_input"></div>
+            Medium
+          </label><br />
+
+          <label for="fast1" class="label_radio">
+            <input type="radio" class="radio-two" id="fast1" name="speed" value="fast" />
+            <div class="radio_input"></div>
+            Fast
+          </label><br />
+          <label for="very_fast" class="label_radio">
+            <input type="radio" class="radio-two" id="very_fast" name="speed" value="very_fast" />
+            <div class="radio_input"></div>
+            Very Fast
+          </label><br />
+        </dir> 
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button onclick="back_ToMenu()" type="button" name="back" class="btn btn-primary">back</button>
+      <button type="submit" name="submit" class="btn btn-primary" id="start-but">start</button>  
+    </div>
+
+  </div>
+
+</form>
+
+{% endblock %} 
+{% block scripts %} 
+<script type="text/javascript">
+  var user_uuid= "{{ request.session.uuid }}";
+
+  const selected = document.querySelector(".selected");
+  const options_Container = document.querySelector(".options-container")
+  const optionList = document.querySelectorAll(".option")
+
+  const selected_two = document.querySelector(".selected-two");
+  const options_Container_two = document.querySelector(".options-container-two")
+  const optionList_two = document.querySelectorAll(".option-two")
+
+  selected.addEventListener("click",() =>{
+    options_Container.classList.toggle("active");
+    options_Container_two.classList.remove("active-two");
+  })
+
+
+  optionList.forEach(o => {
+    o.addEventListener("click", () => {
+    selected.innerHTML = o.querySelector("label").innerHTML;
+      options_Container.classList.remove("active");      
+    })
+  })
+
+  //==================================================
+
+  selected_two.addEventListener("click",() =>{
+    options_Container_two.classList.toggle("active-two");
+    options_Container.classList.remove("active");      
+  })
+
+  optionList_two.forEach(o => {
+    o.addEventListener("click", () => {
+      selected_two.innerHTML = o.querySelector("label").innerHTML;
+      options_Container_two.classList.remove("active-two");
+    });
+  });
+
+
+  
+  // Ajax part
+
+  let arithmeticResults = [];
+  let difficultyResults = [];
+
+  const errorMessage =  document.querySelector("#error");
+  const errorMessagetwo =  document.querySelector("#errortwo");
+  var errorCounter = 0;
+  var errorCounterTwo = 0;
+
+
+  $("#start-but").on("click", function(e){
+    e.preventDefault();
+
+    
+    let arithmeticSel = document.querySelector('#arithmetic-selection');
+    let arithmeticSelTwo = document.querySelector('#arithmetic-selectionTwo');    
+
+    if(arithmeticSelTwo != null){
+        arithmeticSelTwo = arithmeticSelTwo.innerHTML;
+        arithmeticSelTwo = arithmeticSelTwo.toLowerCase();
+
+        arithmeticResults.push(arithmeticSelTwo);
+
+        if(arithmeticResults.length > 1){
+            arithmeticResults.shift();
+        }
+    }else{
+
+      arithmeticSel = arithmeticSel.innerHTML;
+      arithmeticSel = arithmeticSel.toLowerCase();
+      arithmeticResults.push(arithmeticSel);
+
+      if(arithmeticResults.length > 1){
+          arithmeticResults.shift();
+      }
+    }    
+
+
+
+    let difficultySel = document.querySelector('#difficulty-selection');
+    let difficultySelTwo = document.querySelector('#difficulty-selectionTwo');
+    
+
+    if(difficultySelTwo != null){
+      difficultyResults.push("very_easy");
+
+      if(difficultyResults.length > 1){
+            // shift() --> to remove first index in array
+            difficultyResults.shift();
+        }
+    }else{
+      difficultySel = difficultySel.innerHTML;
+      difficultySel = difficultySel.toLowerCase();
+
+      if(difficultySel === "very easy"){
+        difficultySel = "very_easy";
+        difficultyResults.push(difficultySel);
+      
+        if(difficultyResults.length > 1){
+            difficultyResults.shift();
+        }
+
+      }else if(difficultySel === "very hard"){
+        difficultySel = "very_hard";
+        difficultyResults.push(difficultySel);
+
+        if(difficultyResults.length > 1){
+            difficultyResults.shift();
+        }
+      }else{
+        difficultyResults.push(difficultySel);
+        if(difficultyResults.length > 1){
+            difficultyResults.shift();
+        }
+      }
+    }
+    
+
+    let year_level = document.querySelector('input[name="lvl"]:checked');
+    let speed_click = document.querySelector('input[name="speed"]:checked');
+
+
+    if(year_level != null){
+      year_level = year_level.value;
+      errorCounterTwo = 0
+      errorMessage.innerHTML = "";
+    }else{
+      ++errorCounterTwo;
+      let audio = new Audio("{% static 'Assessment/music/warning.wav' %}");
+      audio.play()
+      errorMessage.innerHTML = 'Please select year level !';
+    }
+
+    if(speed_click != null){
+      speed_click = speed_click.value;
+      errorCounter = 0
+      errorMessagetwo.innerHTML = "";
+    }else{
+      ++errorCounter;
+      let audio = new Audio("{% static 'Assessment/music/warning.wav' %}");
+      audio.play()
+      errorMessagetwo.innerHTML = 'Please select year speed !';
+    }
+
+    
+    var url = '{% url "singlePlayer:singlePlayerSettingsAjax" %}'
+
+    if(errorCounter === 0 && errorCounterTwo === 0){
+      $.ajax({ 
+        type:'POST',
+          url:url,
+          data:{
+              arithmeticResults: JSON.stringify(arithmeticResults),
+              difficultyResults: JSON.stringify(difficultyResults),
+              year_level: year_level,
+              speed:speed_click,
+              studentUUID: user_uuid,
+              csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+          },
+          success:function(data){
+            let audio = new Audio("{% static 'Assessment/music/IBM_ui_Confirm.wav' %}");
+            audio.play()
+            setTimeout(function(){ 
+                redirect_url = '/singleplayer/game-play/'+data;
+                window.location.replace(redirect_url);
+            }, 400);
+          },
+          error : function () {
+              alert("Error Ajax");
+          }
+      });
+
+    }
+    
+
+  });
+
+	
+
+
+
+</script>
+
+<script>
+  function back_ToMenu(){
+      let audio = new Audio("{% static 'Assessment/music/IBM_ui_Back.wav' %}");
+      audio.play()
+      setTimeout(function(){ 
+        window.location.replace('/singleplayer/menu-single-player/'+ user_uuid);
+      }, 400);
+  }
+</script>
+
+{% endblock %}

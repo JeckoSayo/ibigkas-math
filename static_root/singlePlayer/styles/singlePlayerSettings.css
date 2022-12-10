@@ -1,0 +1,424 @@
+@import '../Assessment/styles/mainPage.css';
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+html,
+body ,.main{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  background: #f7f6ff;
+  overflow-x: hidden;
+}
+form{
+	padding: 20px;
+}
+
+p,
+label{
+	font-size: var(--text-size);
+	font-family: var(--font-fam-bold);
+	color: var(--text-color);
+}
+
+/* .settings_center {
+  border: 2px solid red;
+} */
+
+.main {
+  	display: flex;
+	position: relative;
+	justify-content: center;
+    align-items: center;
+    height: 100%;
+	overflow:hidden;
+}
+
+.second-base{
+	position: relative;
+	background: var(--body-bg);
+    width: 30rem;
+    padding: 20px;
+    height: 37rem;
+    border-radius: 5px;
+	box-shadow: #9E7B2A 0px 2px 5px -1px, #9E7B2A 0px 1px 3px -1px;
+}
+
+.menu-title{
+	color: var(--text-title-color);
+	font-size: 20px;
+	font-family: var(--font-semi-bold);
+}
+.top-title{
+	margin-top: 30px;
+}
+
+/* ================================ ARITHMETIC SETTINGS ========================== */
+.settings-center{
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-box{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width:100%;
+}
+  .selected::after{
+	content: "";
+	-webkit-mask: url("../img/Arrow-down.svg") center/cover no-repeat;
+          mask: url("../img/Arrow-down.svg") center/cover no-repeat;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background:var(--text-color);
+
+	position: absolute;
+	width: 23px;
+    height: 16px;
+	right: 10px;
+	top: 18px;
+	transition:all 0.4s;
+	transform: rotate(0);
+}
+.select-box .options-container.active{
+	max-height: 140px;
+	opacity: 1;
+	visibility: visible;
+	overflow-y: scroll; /* for scrolling*/ 
+	top: 4rem;
+	background: var(--body-bg);
+}
+
+.select-box .options-container{
+	position: absolute;
+	top: 4rem;
+	color: var(--text-color);
+	width: 100%;
+	transition: all 0.4s;
+	border-radius: 8px;
+	overflow: hidden;
+	visibility: hidden;
+	max-height: 0px;
+	opacity: 0;
+	border: 2px solid var(--border-color);
+	order: 0;
+}
+
+/* SCROLLBAR DESIGN ============ */
+.select-box .options-container::-webkit-scrollbar{
+	width: 8px;
+	background: #F0DCAF;
+	border-radius: 0 8px 8px 0;
+}
+.select-box .options-container::-webkit-scrollbar-thumb{
+	background: var(--border-color);
+	border-radius: 0 8px 8px 0;
+}
+/* ============================= */
+
+.select-box .option,
+.selected{
+	padding: 12px 24px;
+	cursor: pointer;
+}
+
+.select-box .option:hover{
+	background: var(--hover-color);
+}
+
+.select-box label{
+	cursor: pointer;
+}
+
+.select-box .option .radio{
+	display: none;
+}
+
+.selected{
+	font-size: var(--text-size);
+	font-family: var(--font-fam-bold);
+	color: var(--text-color);
+	border: 2px solid var(--border-color);
+	border-radius: 8px;
+	margin-bottom: 5px;
+	position: relative;
+	order: 0;
+	height: 60px;
+}
+/* ================================ ARITHMETIC SETTINGS END ========================== */
+/* ============================ DIFFICULTY LEVEL SETTINGS ======================================= */
+.select-box-two{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width:100%;
+}
+
+.selected-two::after{
+	content: "";
+	-webkit-mask: url("../img/Arrow-down.svg") center/cover no-repeat;
+          mask: url("../img/Arrow-down.svg") center/cover no-repeat;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background:var(--text-color);
+
+	position: absolute;
+	width: 23px;
+    height: 16px;
+	right: 10px;
+	top: 18px;
+	transition:all 0.4s;
+	transform: rotate(0);
+}
+.select-box-two .options-container-two.active-two{
+	max-height: 140px;
+	opacity: 1;
+	z-index:100;
+	visibility: visible;
+	overflow-y: scroll; /* for scrolling*/ 
+	background: var(--body-bg);
+}
+
+.select-box-two .options-container-two{
+	position: absolute;
+	top: 4em;
+	color: var(--text-color);
+	width: 100%;
+	transition: all 0.4s;
+	border-radius: 8px;
+	overflow: hidden;
+	visibility: hidden;
+	max-height: 0;
+	opacity: 0;
+	border: 2px solid var(--border-color);
+	order: 1;
+}
+
+/* SCROLLBAR DESIGN ============ */
+.select-box-two .options-container-two::-webkit-scrollbar{
+	width: 8px;
+	background: #F0DCAF;
+	border-radius: 0 8px 8px 0;
+}
+.select-box-two .options-container-two::-webkit-scrollbar-thumb{
+	background: var(--border-color);
+	border-radius: 0 8px 8px 0;
+}
+/* ============================= */
+
+.select-box-two .option-two,
+.selected-two{
+	padding: 12px 24px;
+	cursor: pointer;
+}
+
+.select-box-two .option-two:hover{
+	background: var(--hover-color);
+}
+
+.select-box-two label{
+	cursor: pointer;
+}
+
+.select-box-two .option-two .radio{
+	display: none;
+}
+
+.selected-two{
+	font-family: var(--font-fam-bold);
+	color: var(--text-color);
+	border: 2px solid var(--border-color);
+	border-radius: 8px;
+	margin-bottom: 5px;
+	position: relative;
+	order: 0;
+	height: 60px;
+	font-size: var(--text-size);
+}
+/* ============================ DIFFICULTY LEVEL SETTINGS END ======================================= */
+/* ============================ SPEED SETTINGS ======================================= */
+.speed-settings{
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+}
+.speed-container{
+	margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+.speed-settings label{
+	cursor: pointer;
+	font-size: 22px !important;
+}
+.label_radio{
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+	margin-right: 10px;
+	/* display: none; */
+}
+.sing1Player .speed-settings .radio-two{
+	display: none;
+}
+.mitiSettings .speed-settings .radio-two{
+	display: none;
+}
+.radio_input{
+	width: 20px;
+	height: 20px;
+	border: 2px solid var(--second-color);
+	border-radius: 50%;
+	margin-right: 10px;
+	box-sizing: border-box;
+	padding: 2px;
+}
+.radio_input::after{
+	content: "";
+	width: 100%;
+	height: 100%;
+	display: block;
+	background: var(--second-color);
+	border-radius: 50%;
+
+	transform: scale(0);
+}
+
+.radio-two:checked + .radio_input::after{
+	transform: scale(1);
+}
+
+/* ============================ SPEED SETTINGS END ======================================= */
+/* ============================ BUTTONS ======================================= */
+
+.button-container{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 3rem;
+}
+.second-base button{
+	width: 6rem;
+	color: var(--text-color);
+	font-family: var(--font-fam-bold);
+	background: var(--body-bg);
+	border: 2px solid var(--border-color);
+}
+.second-base button:hover{
+	background: var(--hover-second-color);
+	color: var(--hover-text-color);
+	border: 2px solid var(--hover-second-color);
+}
+.needs-validation{
+	position: absolute;
+    width: 92%;
+    margin: 0;
+	height: 100%;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.second-valid{
+	width: 100%;
+}
+
+/* ======================================================================= */
+@media screen and (max-width:450px){
+
+	.second-base{
+		height: 100% !important;
+	}
+	.log-con{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		height: inherit;
+	  }
+	  .username-container {
+		width: 90%;
+	  }
+	  .create-container .input {
+		width: 100%;
+		padding: auto;
+	  }
+	  .swal2-title{
+		font-size: 20px !important;
+	  }
+}
+.swal2-popup{
+	font-family: var(--font-fam-bold) !important;
+	background: var(--body-bg) !important;
+	border: 3px solid var(--border-color) !important;
+}
+.swal2-title{
+	color: var(--text-color) !important;
+}
+
+
+@media screen and (max-width:450px){
+	.swal2-title{
+		font-size: 17px !important;
+	}
+}
+
+@media screen and (max-width:350px){
+	.swal2-title{
+		font-size: 15px !important;
+	}
+}
+
+@media screen and (max-width:422px){
+	.settings-center{
+		flex-direction: column;
+	}
+	.select-box-two, .select-box{
+		width: 95%;
+	}
+	.select-box .options-container.active, .options-container{
+		background: var(--body-bg);
+		z-index: 200;
+		width: 100%;
+	}
+	.select-box-two .options-container-two.active-two, .options-container-two{
+		width: 100%;
+		background: var(--body-bg);
+		z-index: 200;
+	}
+	
+}
+@media screen and (max-width:410px){
+	.speed-settings label{
+		font-size: 16px !important;
+	}
+	.speed-settings{
+		gap:0rem;
+	}
+}
+@media screen and (max-width:281px){
+	.speed-settings label{
+		font-size: 14px !important;
+	}
+	.needs-validation .speed-container .radio_input{
+		width: 14px;
+    	height: 14px;
+	}
+}

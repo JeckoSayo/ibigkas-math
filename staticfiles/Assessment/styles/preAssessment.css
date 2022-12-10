@@ -1,0 +1,116 @@
+@import url('../styles/mainPage.css');
+
+.overall-con{
+	padding: 0px 10px 10px 10px;
+    height: 32rem;
+    /* border: 1px solid red; */
+    overflow: hidden;
+    overflow-y: scroll;
+	
+}
+.overall-con .description{
+	font-size: 16px !important;
+    text-align: justify;
+	font-family: var(--font-semi-bold);
+}
+
+ /* ======== Custom Scroll bar =======  */
+.overall-con::-webkit-scrollbar{
+	width: 8px;
+	background: #F0DCAF;
+	border-radius:2px;
+}
+.overall-con::-webkit-scrollbar-thumb{
+	background: var(--border-color);
+	border-radius:2px;
+}
+/* ============================== */
+
+  .assessment-container{
+    padding: 10px;
+    height: 89%;
+    /* border:1px solid red; */
+	overflow: hidden;
+	overflow-y: scroll;
+	/* box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px; */
+  }
+  .questions{
+    font-size: 17px;
+    color: var(--text-color);
+    font-family: var(--font-semi-bold);
+    margin-top: 10px;
+
+}
+
+ /* ======== Custom Scroll bar =======  */
+.assessment-container::-webkit-scrollbar{
+	width: 8px;
+	background: #F0DCAF;
+	border-radius:2px;
+}
+.assessment-container::-webkit-scrollbar-thumb{
+	background: var(--border-color);
+	border-radius:2px;
+}
+/* ============================== */
+.pre-assess-ans{
+	width: 22rem;
+	height: 2.5rem;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
+
+/* ============================================== */
+/* https://codepen.io/mr-t77/pen/jRzmMZ?editors=1100 */
+.current-id,
+.Onecurrent-id{
+	display: none;
+}
+.assessment-container .preSub{
+	margin-top: 20%;
+}
+
+
+
+.likert{
+	list-style: none;
+	width: 100%;
+	margin: 0;
+  }
+
+  form .likert li label{
+	font-size: 15px !important;
+  }
+
+
+.conPreAss{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	height: 100%;
+}
+@media screen and (max-width:450px){
+	.assessment-container form{
+		padding: auto;
+	}
+	form .likert{
+	width: 88%;
+    overflow-x: scroll;
+	}
+	
+	
+}
+@media screen and (max-width:312px){
+	.likert {
+		width: 144px !important;
+		display: flex !important;
+		gap: 38px;
+		overflow-x: scroll;
+	}
+	.conPreAss {
+		padding: 0px 5%;
+	}
+}
+

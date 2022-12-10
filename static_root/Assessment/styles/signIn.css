@@ -1,0 +1,38 @@
+@import url('../Assessment/styles/mainPage.css');
+
+  .login-form-multi input{
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    width: 70%;
+    height: 42px;
+    padding: 10px;
+    background: var(--body-bg);
+    color: var(--text-color);
+    font-family: var(--font-semi-bold);
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+#sign-user
+{
+    text-transform:capitalize;
+}
+body.swal2-height-auto{
+    height: 100% !important;
+}
+
+.login-form-multi input:focus {
+    border: 2px solid var(--second-color);
+  }
+ .login-form-multi{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+ }
+ #login--form{
+    height: 100%;
+ }

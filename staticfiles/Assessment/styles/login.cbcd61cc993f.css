@@ -1,0 +1,25 @@
+@import url("../styles/mainPage.3f5c2b4574d3.css");
+
+.category{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+.category button{
+    margin-bottom: 9px;
+    width: 11rem !important;
+}
+.logIn_page img{
+  top:19%;
+  left: 50%;
+  transform: translate3d(-50%,-50%, 0);
+  position: absolute;
+  width: 15rem;
+}
+.logIn_page{
+  height: 100%;
+}
+
+

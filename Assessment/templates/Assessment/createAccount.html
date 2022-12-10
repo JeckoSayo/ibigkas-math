@@ -1,0 +1,140 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %}
+
+{% block title %}Create Account{% endblock %}
+{% load static %}
+{% block content %}
+<div class="create-container">
+    
+    <form method="POST" autocomplete="off" id="create-account">
+        {% csrf_token %}
+        <div class="cont">
+            <h3>Create Account</h3>
+            <input type="text" class="input" id="user" onkeyup="success()" name="username" placeholder="Enter username..." ><br>
+            <input type="text" class="input" id="surnameId" onkeyup="success()" name="surname" placeholder="Enter surname..."><br>
+            <input type="text" class="input" id="sectionId" onkeyup="success()" name="section" placeholder="Section..">
+            
+            <div class="gender-layout">
+                <div class="gender">
+                    <p>Gender</p>
+                    <button id="male" type="button"  name="gender" value="M" class="btn btn-primary gen">Male</button>
+                    <button id="female" type="button"  name="gender" value="F" class="btn btn-primary gen">Female</button>
+                </div>
+                <div class="birth">
+                    <p>Enter your Age</p>
+                    <input id="user_age"  class="inputTwo" placeholder="Age.." onkeyup="success()" type="number">
+                </div>
+            </div>
+            <button type="submit" id="button" name="createAcc" class="btn btn-primary create-acc" disabled>create</button>
+        </div>
+    </form>
+    <button onclick="back()" type="button" class="btn btn-primary host-game-back">back</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% for message in messages %}
+        <script type="text/javascript">
+          window.onload = function(){
+            alert('{{message}}')
+          }
+        </script>
+{% endfor %}
+
+<script type="text/javascript">  
+    // ================ CUSTOM GENDER BUTTON ==================
+    var male = document.getElementById("male").addEventListener("click", changeText);
+    var female = document.getElementById("female").addEventListener("click", changeText);  
+    function changeText(event){
+        const maleC = document.querySelector("#male");
+        const femaleColor = document.querySelector("#female");
+
+        if(event.target.id === "male"){
+            // ADDING CLASS NAME "color"
+
+            maleC.classList.toggle("color");
+            // REMOVING CLASS NAME "color"
+            femaleColor.classList.remove("color");
+        }
+        else if(event.target.id === "female"){
+            // ADDING CLASS NAME "color"
+            femaleColor.classList.toggle("color");
+            // REMOVING CLASS NAME "color"
+            maleC.classList.remove("color");            
+        }
+    }
+    // ================END CUSTOM GENDER BUTTON==================
+
+
+    function back(){
+        let audio = new Audio("{% static 'Assessment/music/IBM_ui_Back.wav' %}");
+        audio.play()
+        setTimeout(function(){ 
+        location.href='{% url "Assessment:login_page" %}';
+        }, 400);
+    }
+    
+    // DISABLE THE CREATE BUTTON IF THE INPUT IS EMPTY
+    function success() {
+	 if(document.getElementById("user").value==="" || document.getElementById("surnameId").value==="" || document.getElementById("sectionId").value==="" || document.getElementById("user_age").value==="") {   
+        
+        document.getElementById('button').disabled = true; 
+        } else { 
+            
+            document.getElementById('button').disabled = false;
+        }
+    }
+
+    $("#create-account").on("submit", function(e){
+	e.preventDefault();
+    
+    var sam = document.getElementsByClassName('color')[0]?.value;
+    const check_class= document.querySelector('.gen');
+    if(check_class.classList.contains('color') === false && sam === 'F' || check_class.classList.contains('color') === true && sam === 'M') {
+        
+        var users_name = document.getElementById("user").value;
+        var users_surname = document.getElementById("surnameId").value;
+        var user_section = document.getElementById("sectionId").value;
+        var user_age = document.getElementById("user_age").value;
+        var user_gender = document.getElementsByClassName('color')[0].value;
+
+        var url = '{% url "Assessment:createAjax" %}'
+            $.ajax({
+			type:'POST',
+			url:url,
+			data:{
+                user_name: users_name,
+                users_surname: users_surname,
+                user_gender:user_gender,
+                section:user_section,
+                user_age:user_age,
+				csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+			},
+			success:function(data){
+                var users_name = document.getElementById("user").value;
+                // CONVERT THE FIRST LETTER OF THE 'uses_name' TO UPPER CASE THEN THE REST IS LOWER CASE
+                function titleCase(string){
+                    return string[0].toUpperCase() + string.slice(1).toLowerCase();
+                }
+                let result = titleCase(users_name);
+
+                if(data === result +' already exist. Please try another username'){
+                    alert(data)
+                }else{
+                    redirect_url = '/ibigkas-menu/'+data;
+                    window.location.replace(redirect_url);
+                }
+                    
+			},
+            error : function () {
+                alert("Error Ajax");
+            }
+		});
+    }else{
+        alert("Please choose your gender!")
+    }
+        
+    });
+
+
+</script>
+{% endblock %}

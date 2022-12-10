@@ -1,0 +1,37 @@
+{% extends 'revise_multiplayer/multiPlayerBase.html' %}
+{% load static %}
+{% block title %}
+    TEST LOBBY DJANGO CHANNELS
+{% endblock %}
+
+{% block content %}
+  <div id="room-container">
+    
+    <div id="player-name">Player: {{ player.username }}</div>
+
+    <h1>ROOMS: </h1>
+  
+    <div class="group-list">
+      <label for="group-select">Active rooms</label>
+      <select multiple class="form-control" id="room-select">
+        {% for room in rooms %}
+          <option>{{ room }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    
+    document.querySelector("#room-select").onchange = function() {
+      let user_uuid = "{{ uuid }}";
+      let roomName = document.querySelector("#room-select").value.split(" (")[0];
+      console.log("room:" +  roomName);
+      window.location.pathname = "multiplayer/" + roomName + "/settings/" + user_uuid + "/";
+    }
+
+  </script>
+{% endblock %}
